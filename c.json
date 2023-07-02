@@ -1,0 +1,1 @@
+{"lastprivate": 1623, "task": 4501, "nowait": 1008, "barrier": 2833, "for": 30185, "parallel_for": 22201, "section": 2501, "simd": 9877, "single": 1027, "private": 12885, "dynamic_schedule": 2093, "reduction": 3056, "firstprivate": 1908, "master": 1289, "atomic": 3652, "flush": 599, "static_schedule": 6168, "shared": 7712, "loop_total": 21936098, "critical": 4757, "target": 6248}
