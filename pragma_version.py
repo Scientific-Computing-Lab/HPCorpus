@@ -56,7 +56,7 @@ def update_versions(line, versions, is_fortran):
         versions['3'][clause] = 1 if clause not in versions['3'] else versions['3'][clause]+1
 
     #     version 2.5
-    clauses = [clause for clause in [' private', 'section', 'barrier', 'critical', 'flush', 'single', 'master', 'firstprivate', 'lastprivate', 'shared', 'reduction', ' if', 'num_threads', 'collapse'] if clause in line]
+    clauses = [clause for clause in [' private', 'section', 'barrier', 'nowait', 'critical', 'flush', 'single', 'master', 'firstprivate', 'lastprivate', 'shared', 'reduction', ' if', 'num_threads', 'collapse'] if clause in line]
     
     if 'schedule' in line:
         clauses += ['schedule_'+clause for clause in ['static', 'dynamic'] if clause in line]
@@ -64,7 +64,7 @@ def update_versions(line, versions, is_fortran):
     if (is_fortran and ' do' in line) or (not is_fortran and ' for' in line):
         clauses += ['for']
 
-    if 'parallel' in line and (is_fortran and ' do' in line) or (not is_fortran and ' for' in line):
+    if 'parallel' in line and ((is_fortran and ' do' in line) or (not is_fortran and ' for' in line)):
         clauses += ['parallel_for']
 
     for clause in clauses:
@@ -96,4 +96,3 @@ def get_omp_version(code, is_fortran):
             update_versions(line, versions, is_fortran)
 
     return total_loop, versions
-

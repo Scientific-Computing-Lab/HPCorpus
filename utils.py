@@ -29,7 +29,7 @@ def remove_comments(code, is_fortran):
 
 def concat_lines(code, is_fortran):
     '''
-    Concatenate sequential splitted lined
+    Concatenate sequential splitted lines
 
     Parameters:
         code: str - code textual representation
@@ -95,5 +95,4 @@ def is_omp_pragma(line, is_fortran):
 		return sub_line.startswith('!$') and 'omp' in line and 'end' not in line
 	else:
 		return sub_line.startswith('#pragma ') and ' omp ' in line
-
 
