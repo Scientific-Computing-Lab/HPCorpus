@@ -16,6 +16,7 @@ def unite_paradigms():
 
             for repo, pars in paradigms.items():
                 if repo not in repos:
+
                     repos[repo] = {'CUDA': False, 'OpenCL': False, 'OpenACC': False, 'SYCL': False, 
                                           'TBB': False, 'Cilk': False, 'OpenMP': False, 'MPI': False}
 
@@ -26,7 +27,7 @@ def unite_paradigms():
         with open('total_paradigms.json'.format(dir), 'w') as f:
             f.write(json.dumps(repos))
 
-    
+
 def get_repo_metadata(metadata_filepath):
     '''
     Load metadata - creation and last update time of each repo
