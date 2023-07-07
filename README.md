@@ -2,10 +2,9 @@
 
 This repository provides code to extract statistical information about parallelization APIs, with a primary focus on OpenMP. The parallelization APIs covered in this repository include Cuda, OpenCL, OpenACC, SYCL, TBB, Cilk, OpenMP, and MPI. The extracted information aims to assist scientists in understanding the practical use of parallelization APIs in the programming languages C, C++, and Fortran, which are widely known for their high-performance capabilities.
 
-The data is shared at: https://technionmail-my.sharepoint.com/:f:/g/personal/galoren_technion_ac_il/EiB0PK5wIYBBnU6Hs8ub6s0BbATztAfmCfGLJ9KqNwELcw?e=A2SBAb.
+The data is shared at: [HPCorpus](https://technionmail-my.sharepoint.com/:f:/g/personal/galoren_technion_ac_il/EiB0PK5wIYBBnU6Hs8ub6s0BbATztAfmCfGLJ9KqNwELcw?e=A2SBAb).
 
-Please download in small fragments as a complete download corrupts the zip file.
-
+Please download in small fragments, as a complete download corrupts the zip file.
 
 ## Repository Structure
 The repository is organized as follows:
