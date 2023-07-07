@@ -230,9 +230,44 @@ def get_version_per_year(metadata_filepath):
     return versions_per_year
 
 
+def get_loops():
+    '''
+    Figure 8
+
+    get for-loop usage
+    '''
+    result = {}
+
+    for lang in ['c', 'cpp', 'Fortran']:
+        count_versions = aggregate_versions(lang)
+        result[lang] = {'total_loop': count_versions['total_loop'],
+                        'omp_for': count_versions['vers']['2']['for']}
+        
+    return result
+
+
+def get_scheduling():
+    '''
+    Figure 10
+
+    Get scheduling  usage
+    '''
+    result = {}
+
+    for lang in ['c', 'cpp', 'Fortran']:
+        count_versions = aggregate_versions(lang)
+        result[lang] = {'schedule_static': count_versions['vers']['2']['schedule_static'],
+                        'schedule_dynamic': count_versions['vers']['2']['schedule_dynamic'],
+                        'schedule_guided': count_versions['vers']['2']['schedule_guided'],
+                        'schedule_auto': count_versions['vers']['2']['schedule_auto'],
+                        'schedule_runtime': count_versions['vers']['2']['schedule_runtime']}
+        
+    return result
+
+
 def aggregate_versions(lang):
     '''
-    Figure 8 - 11
+    Figure 11
 
     Aggregate the usage of each OpenMP directive
     '''
@@ -251,4 +286,3 @@ def aggregate_versions(lang):
                                                                 count_versions['vers'][k][clause]+amount
                     
         return count_versions
-    
