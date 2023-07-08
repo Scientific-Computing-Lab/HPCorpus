@@ -23,7 +23,7 @@ def iterate_jsons(dir, vars, is_fortran=False):
     '''
 
     par_paradigms = {}
-    omop_versions = {}
+    omp_versions = {}
     dir_path = os.path.join(vars['HPCorpus_path'], dir)
 
     for json_file in os.listdir(dir_path):
@@ -57,22 +57,22 @@ def iterate_jsons(dir, vars, is_fortran=False):
                 ### OpenMP versions ###
                 total_loop, versions = get_omp_version(code.lower(), is_fortran)
 
-                if repo_name not in omop_versions:
-                    omop_versions[repo_name] = {'total_loop': 0, 'vers': {'2': {}, '3':{}, '4':{}, '4.5':{}, '5':{}} }
+                if repo_name not in omp_versions:
+                    omp_versions[repo_name] = {'total_loop': 0, 'vers':  {'ver2.5': {}, 'ver3.0':{}, 'ver3.1':{}, 'ver4.0':{}, 'ver4.5':{}, 'ver5.0':{}, 'ver5.1':{}, 'ver5.2':{}} }
 
-                omop_versions[repo_name]['total_loop'] += total_loop
+                omp_versions[repo_name]['total_loop'] += total_loop
 
                 for ver in versions.keys():
                     for clause, amount in versions[ver].items():
-                        omop_versions[repo_name]['vers'][ver][clause] = amount if clause not in omop_versions[repo_name]['vers'][ver] else \
-                                                                                omop_versions[repo_name]['vers'][ver][clause] + amount
+                        omp_versions[repo_name]['vers'][ver][clause] = amount if clause not in omp_versions[repo_name]['vers'][ver] else \
+                                                                                omp_versions[repo_name]['vers'][ver][clause] + amount
                 ### OpenMP versions ###
     
     with open('{}_paradigms.json'.format(dir), 'w') as f:
         f.write(json.dumps(par_paradigms))
 
     with open('{}_versions.json'.format(dir), 'w') as f:
-        f.write(json.dumps(par_paradigms))
+        f.write(json.dumps(omp_versions))
 
 
 
@@ -82,4 +82,3 @@ if __name__ == '__main__':
         vars = json.loads(f.read())
 
     iterate_jsons('Fortran', vars, is_fortran=True)
-
