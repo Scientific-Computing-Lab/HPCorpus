@@ -43,19 +43,7 @@ def get_repo_metadata(metadata_filepath):
 
             metadata[line['URL'][len(prefix): -len(suffix)]] = {'creation_time': creation_time, 'update_time': update_time, 'fork': fork}
 
-    return metadata
-
-
-# def debug(metadata_filepath):
-
-#     metadata = get_repo_metadata(metadata_filepath)
-#     with open('analyzed_data/total_paradigms.json', 'r') as f:
-#         paradigm_per_repo = json.loads(f.read())
-
-#         for repo in metadata:
-#             if repo not in paradigm_per_repo:
-#                 print(repo)
-    
+    return metadata    
     
 
 def get_paradigms_over_time(paradigm_list, metadata_filepath, avoid_fork=True, key='update_time'):
@@ -98,11 +86,13 @@ def get_total_repos_over_time(metadata_filepath):
 
     Get the total usage of HPCorpus repositories
     '''
-    paradigm_per_year = {}
-    paradigm_over_time = get_paradigms_over_time([], metadata_filepath, avoid_fork=False, key='creation_time')
+    paradigm_per_year = {'creation_time': {}, 'update_time': {}}
 
-    for year in paradigm_over_time:
-        paradigm_per_year[year] = sum(paradigm_over_time[year].values())
+    for key in paradigm_per_year:
+        paradigm_over_time = get_paradigms_over_time([], metadata_filepath, avoid_fork=False, key=key)
+
+        for year in paradigm_over_time:
+            paradigm_per_year[key][year] = sum(paradigm_over_time[year].values())
 
     return paradigm_per_year
 
@@ -153,21 +143,22 @@ def cumulative_openmp(metadata_filepath):
     Accumulate the usage of OpenMP API over the last decade
     '''
     total = 0
-    openmp_over_time_cumulative = {}
+    openmp_over_time_cumulative = {'creation_time': {}, 'update_time': {}}
 
-    openmp_over_time = get_paradigms_over_time(['OpenMP'], metadata_filepath, avoid_fork=True, key='update_time')
+    for key in openmp_over_time_cumulative:
+        openmp_over_time = get_paradigms_over_time(['OpenMP'], metadata_filepath, avoid_fork=True, key=key)
 
-    for year in range(2008, 2024):
-        for month in range(12):
-            y, m = year, month+1
+        for year in range(2008, 2024):
+            for month in range(12):
+                y, m = year, month+1
 
-            if y in openmp_over_time and m in openmp_over_time[y]:
-                total += openmp_over_time[y][m]
+                if y in openmp_over_time and m in openmp_over_time[y]:
+                    total += openmp_over_time[y][m]
 
-            if y not in openmp_over_time_cumulative:
-                openmp_over_time_cumulative[y] = {}
+                if y not in openmp_over_time_cumulative[key]:
+                    openmp_over_time_cumulative[key][y] = {}
 
-            openmp_over_time_cumulative[y][m] = total
+                openmp_over_time_cumulative[key][y][m] = total
 
     return openmp_over_time_cumulative
 
@@ -205,7 +196,9 @@ def get_omp_mpi_usage(metadata_filepath):
 
     Get the usage of OpenMP + MPI
     '''
-    return get_paradigm_per_year(['OpenMP', 'MPI'], metadata_filepath, key='update_time')
+    return get_paradigm_per_year(['OpenMP'], metadata_filepath, key='update_time'), \
+            get_paradigm_per_year(['MPI'], metadata_filepath, key='update_time'), \
+            get_paradigm_per_year(['OpenMP', 'MPI'], metadata_filepath, key='update_time')
 
 
 def get_version_per_year(metadata_filepath):
