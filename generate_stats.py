@@ -27,7 +27,7 @@ def unite_paradigms():
     
 def get_repo_metadata(metadata_filepath):
     '''
-    Load metadata - creation and last update time of each repo
+    Load metadata - fork, creation and last update time of each repo
     '''
     metadata = {}
     prefix = 'https://github.com/'
@@ -46,12 +46,24 @@ def get_repo_metadata(metadata_filepath):
     return metadata
 
 
+# def debug(metadata_filepath):
+
+#     metadata = get_repo_metadata(metadata_filepath)
+#     with open('analyzed_data/total_paradigms.json', 'r') as f:
+#         paradigm_per_repo = json.loads(f.read())
+
+#         for repo in metadata:
+#             if repo not in paradigm_per_repo:
+#                 print(repo)
+    
+    
+
 def get_paradigms_over_time(paradigm_list, metadata_filepath, avoid_fork=True, key='update_time'):
     '''
     Get the number of repositories that used different parallelization APIs per month.
     '''
     repos_over_time = {}
-
+    total = 0
     metadata = get_repo_metadata(metadata_filepath)
 
     with open('analyzed_data/total_paradigms.json', 'r') as f:
@@ -59,6 +71,7 @@ def get_paradigms_over_time(paradigm_list, metadata_filepath, avoid_fork=True, k
 
         for repo, paradigms in paradigm_per_repo.items():
             if repo in metadata and all([val for paradigm ,val in paradigms.items() if paradigm in paradigm_list]):
+                total += 1
 
                 if avoid_fork and metadata[repo]['fork']:
                     continue
@@ -86,7 +99,7 @@ def get_total_repos_over_time(metadata_filepath):
     Get the total usage of HPCorpus repositories
     '''
     paradigm_per_year = {}
-    paradigm_over_time = get_paradigms_over_time([], metadata_filepath, avoid_fork=False, key='update_time')
+    paradigm_over_time = get_paradigms_over_time([], metadata_filepath, avoid_fork=False, key='creation_time')
 
     for year in paradigm_over_time:
         paradigm_per_year[year] = sum(paradigm_over_time[year].values())
@@ -241,7 +254,7 @@ def get_loops():
     for lang in ['c', 'cpp', 'Fortran']:
         count_versions = aggregate_versions(lang)
         result[lang] = {'total_loop': count_versions['total_loop'],
-                        'omp_for': count_versions['vers']['2']['for']}
+                        'omp_for': count_versions['vers']['ver2.5']['do_' if lang=='Fortran' else 'for_']}
         
     return result
 
@@ -256,11 +269,12 @@ def get_scheduling():
 
     for lang in ['c', 'cpp', 'Fortran']:
         count_versions = aggregate_versions(lang)
-        result[lang] = {'schedule_static': count_versions['vers']['2']['schedule_static'],
-                        'schedule_dynamic': count_versions['vers']['2']['schedule_dynamic'],
-                        'schedule_guided': count_versions['vers']['2']['schedule_guided'],
-                        'schedule_auto': count_versions['vers']['2']['schedule_auto'],
-                        'schedule_runtime': count_versions['vers']['2']['schedule_runtime']}
+
+        result[lang] = {'schedule_static': count_versions['vers']['ver2.5']['schedule_static'],
+                        'schedule_dynamic': count_versions['vers']['ver2.5']['schedule_dynamic'],
+                        'schedule_guided': count_versions['vers']['ver2.5']['schedule_guided'],
+                        'schedule_auto': count_versions['vers']['ver3.0']['schedule_auto'],
+                        'schedule_runtime': count_versions['vers']['ver2.5']['schedule_runtime']}
         
     return result
 
@@ -271,7 +285,7 @@ def aggregate_versions(lang):
 
     Aggregate the usage of each OpenMP directive
     '''
-    count_versions = {'total_loop': 0, 'vers': {'2': {}, '3':{}, '4':{}, '4.5':{}, '5':{}} }
+    count_versions = {'total_loop': 0, 'vers': {'ver2.5': {}, 'ver3.0':{}, 'ver3.1':{}, 'ver4.0':{}, 'ver4.5':{}, 'ver5.0':{}, 'ver5.1':{}, 'ver5.2':{}} }
 
     with open(f'analyzed_data/{lang}_versions.json', 'r') as f:
         version_per_repo = json.loads(f.read())
@@ -280,9 +294,10 @@ def aggregate_versions(lang):
 
             count_versions['total_loop'] += versions['total_loop']
 
-            for k in ['2', '3', '4', '4.5', '5']:
+            for k in ['ver2.5', 'ver3.0', 'ver3.1', 'ver4.0', 'ver4.5', 'ver5.0', 'ver5.1', 'ver5.2']:
                 for clause, amount in versions['vers'][k].items():
                     count_versions['vers'][k][clause] = amount if clause not in count_versions['vers'][k] else \
                                                                 count_versions['vers'][k][clause]+amount
                     
         return count_versions
+    
