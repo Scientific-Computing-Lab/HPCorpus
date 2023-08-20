@@ -4,8 +4,6 @@ This repository provides code to extract statistical information about paralleli
 
 The data is shared by demand.
 
-Please download in small fragments, as a complete download corrupts the zip file.
-
 ## Repository Structure
 The repository is organized as follows:
 
